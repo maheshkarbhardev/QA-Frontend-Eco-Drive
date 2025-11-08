@@ -19,43 +19,43 @@ const initialState = {
   successMessage: "",
 };
 
-// ✅ Get all products
+// Get all products
 export const getAllProducts = createAsyncThunk("product/getAllProducts", async () => {
   const res = await getAllProductsAPI();
   return res.data;
 });
 
-// ✅ Get product by ID
+//  Get product by ID
 export const getProductById = createAsyncThunk("product/getProductById", async (id) => {
   const res = await getProductByIdAPI(id);
   return res.data;
 });
 
-// ✅ Get categories
+//  Get categories
 export const getCategories = createAsyncThunk("product/getCategories", async () => {
   const res = await getCategoriesAPI();
   return res.data;
 });
 
-// ✅ Get usage units
+//  Get usage units
 export const getUsageUnits = createAsyncThunk("product/getUsageUnits", async () => {
   const res = await getUsageUnitsAPI();
   return res.data;
 });
 
-// ✅ Add new product
+//  Add new product
 export const addProduct = createAsyncThunk("product/addProduct", async (formData) => {
   const res = await addProductAPI(formData);
   return res;
 });
 
-// ✅ Update product
+//  Update product
 export const updateProduct = createAsyncThunk("product/updateProduct", async ({ id, formData }) => {
   const res = await updateProductAPI({ id, formData });
   return { id, ...res };
 });
 
-// ✅ Delete product
+//  Delete product
 export const deleteProduct = createAsyncThunk("product/deleteProduct", async (id) => {
   await deleteProductAPI(id);
   return id;
@@ -85,7 +85,7 @@ const productSlice = createSlice({
         state.error = action.error.message;
       })
 
-      // ✅ Get product by ID
+      //  Get product by ID
       .addCase(getProductById.fulfilled, (state, action) => {
         state.selectedProduct = action.payload;
       })

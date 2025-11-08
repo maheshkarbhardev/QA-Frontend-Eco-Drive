@@ -35,7 +35,7 @@ const AppSideBar = () => {
           {!collapsed && (
             // <img src={Logo} alt="EcoDrive Logo" className="h-8 w-[10px]" />
             <span className="text-green-500 font-bold text-[20px] ">
-              BioFuels Junction
+              Eco-Drive
             </span>
           )}
 

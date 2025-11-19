@@ -1,0 +1,278 @@
+import React, { useState,useEffect } from 'react'
+import Select from 'react-select';
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import axiosInstance from '../../../api/axiosInstance';
+
+
+const CustomerBillingAddress = (props) => {
+  const {touched,values,errors,setFieldValue,handleChange} = props; //Destructures values, touched, errors,setFieldValue,handleChange from props (these come from parent Formik render props).these provide current form values and validation state to render controls and error messages.
+
+
+  const [state,setState]=useState([]);
+  const [districts,setDistricts]=useState([]);
+  const [talukas,setTalukas]=useState([]);
+  const [cities,setCities]=useState([]);
+
+  
+  //fetch states on component mount
+  useEffect(()=>{
+    fetchStates();
+  },[])
+
+  const fetchStates=async()=>{
+    try {
+        const res=await axiosInstance.get("/customer/states");
+        if(res.data.success){
+            setState(res.data.data.map((item)=>({
+                label:item.name,
+                value:item.id
+            })))
+        }
+    } catch (error) {
+        console.log("fetchStates error:", error);
+    }
+  }
+
+  //get districts when state changes
+  const fetchDistricts=async(stateId)=>{
+    try {
+        const res=await axiosInstance.get(`/customer/districts/${stateId}`);
+        if(res.data.success){
+            setDistricts(res.data.data.map((item)=>({
+                label:item.name,
+                value:item.id
+            })))
+        }
+    } catch (error) {
+        console.log("fetchDistricts error:", error);
+    }
+  } 
+
+  //get talukas when district changes
+  const fetchTalukas=async(districtId)=>{
+    try {
+        const res=await axiosInstance.get(`/customer/talukas/${districtId}`);
+        if(res.data.success){
+            setTalukas(res.data.data.map((item=> ({
+                label:item.name,
+                value:item.id
+            }))))
+        }
+    } catch (error) {
+        console.log("fetchTaluka error:", error);
+    }
+  }
+
+  //get cities when taluka changes
+  const fetchCities=async(talukaId)=>{
+    try {
+        const res=await axiosInstance.get(`/customer/cities/${talukaId}`);
+        if(res.data.success){
+            setCities(res.data.data.map((item)=> ({
+                label:item.name,
+                value:item.id
+            })))
+        }
+    } catch (error) {
+        console.log("fetchCities error:", error);
+    }
+  }
+
+  //handle state change
+  const handleStateChange=(selected)=>{
+    setFieldValue("billing_state",selected);
+
+    // Reset dependent fields
+    setFieldValue("billing_district", null);
+    setFieldValue("billing_taluka", null);
+    setFieldValue("billing_city_id", null);
+
+    setDistricts([]);
+    setTalukas([]);
+    setCities([]);
+
+    if(selected){
+        fetchDistricts(selected.value);
+    }
+  }
+
+  //handle district change
+  const handleDistrictChange=(selected)=>{
+    setFieldValue("billing_district",selected);
+
+    //reset depenedent fields
+    setFieldValue("billing_taluka", null);
+    setFieldValue("billing_city_id", null);
+
+    setTalukas([]);
+    setCities([]);
+
+    if(selected){
+        fetchTalukas(selected.value);
+    }
+  }
+
+  //handle taluka change
+  const handleTalukaChange=(selected)=>{
+    setFieldValue("billing_taluka",selected);
+
+    // Reset dependent fields
+    setFieldValue("billing_city_id", null);
+    
+    setCities([]);
+
+    if(selected){
+        fetchCities(selected.value);
+    }
+  }
+
+  //handle city change
+  const handleCityChange=(selected)=>{
+    setFieldValue("billing_city_id",selected);
+  }
+
+
+  return (
+    <div>
+        <div className='border-b-2 border-gray-300 pb-[70px]' >
+            <span className='text-[20px] font-semibold ml-[30px]  '>Billing Address</span>
+
+            <div className='flex flex-col'>
+
+                {/* State and District Dropdown */}
+                <div className='flex flex-row'>
+
+                    {/* State dropdown */}
+                    <div className='flex flex-col'>
+                        <Label htmlFor="billing_state" className="text-[17px] ml-[30px] mt-[20px]"><span className='text-red-500 text-sm mr-1'>*</span> State</Label>
+
+                        <Select
+                        options={state}
+                        value={values.billing_state}
+                        onChange={handleStateChange}
+                        placeholder="Select..."
+                        isSearchable
+                        className='w-[300px] ml-[30px] mt-[7px]'
+                        />
+
+                        {touched.billing_state && errors.billing_state && (
+                            <p className='text-red-500 text-sm mt-1'>{errors.billing_state}</p>
+                        )}
+                    </div>
+
+
+                    {/* District Dropdown */}
+                    <div className='flex flex-col'>
+                        <Label htmlFor="billing_district" className="text-[17px] ml-[30px] mt-[20px]"><span className='text-red-500 text-sm mr-1'>*</span> District</Label>
+
+                        <Select
+                        options={districts}
+                        value={values.billing_district}
+                        onChange={handleDistrictChange}
+                        placeholder="Select..."
+                        isDisabled={!values.billing_state}
+                        isSearchable
+                        className='w-[300px] ml-[30px] mt-[7px]'
+                        />
+
+                        {touched.billing_district && errors.billing_district && (
+                            <p className='text-red-500 text-sm mt-1'>{errors.billing_district}</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Taluka and City Dropdown */}
+                <div className='flex flex-row'>
+
+                    {/* Taluka dropdown */}
+                    <div className='flex flex-col'>
+                        <Label htmlFor="billing_taluka" className="text-[17px] ml-[30px] mt-[20px]"><span className='text-red-500 text-sm mr-1'>*</span>Taluka</Label>
+
+                        <Select
+                        options={talukas}
+                        value={values.billing_taluka}
+                        onChange={handleTalukaChange}
+                        placeholder="Select..."
+                        isDisabled={!values.billing_district}
+                        isSearchable
+                        className='w-[300px] ml-[30px] mt-[10px]'
+                        />
+
+                        {touched.billing_taluka && errors.billing_taluka && (
+                            <p className='text-red-500 text-sm mt-1'>{errors.billing_taluka}</p>
+                        )}
+                    </div>
+
+
+                    {/* City Dropdown */}
+                    <div className='flex flex-col'>
+                        <Label htmlFor="billing_city_id" className="text-[17px] ml-[30px] mt-[20px]"><span className='text-red-500 text-sm mr-1'>*</span> City</Label>
+
+                        <Select
+                        options={cities}
+                        value={values.billing_city_id}
+                        onChange={handleCityChange}
+                        placeholder="Select..."
+                        isDisabled={!values.billing_taluka}
+                        isSearchable
+                        className='w-[300px] ml-[30px] mt-[10px]'
+                        />
+
+                        {touched.billing_city_id && errors.billing_city_id && (
+                            <p className='text-red-500 text-sm mt-1'>{errors.billing_city_id}</p>
+                        )}
+                    </div>
+                </div>
+
+
+                {/* Address and Pincode */}
+                <div className='flex flex-row'>
+
+                    {/* Address Field */}
+                    <div className='flex flex-col'>
+                        <Label htmlFor="billing_address" className="text-[17px] ml-[30px] mt-[20px]"><span className='text-red-500 text-sm mr-1'>*</span> Address</Label>
+
+                        <Input
+                        id="billing_address"
+                        name="billing_address"
+                        value={values.billing_address}
+                        onChange={handleChange}
+                        placeholder="Address"
+                        className="w-[300px] ml-[30px] mt-[10px] border border-gray-300"
+                        />
+
+                        {touched.billing_address && errors.billing_address && (
+                            <p className='text-red-500 text-sm mt-1'>{errors.billing_address}</p>
+                        )}
+                    </div>
+
+
+                    {/* Pincode Field */}
+                    <div className='flex flex-col'>
+                        <Label htmlFor="billing_pincode" className="text-[17px] ml-[30px] mt-[20px]"><span className='text-red-500 text-sm mr-1'>*</span> Pincode</Label>
+
+                        <Input
+                        id="billing_pincode"
+                        name="billing_pincode"
+                        value={values.billing_pincode}
+                        onChange={handleChange}
+                        placeholder="Pincode"
+                        className="w-[300px] ml-[30px] mt-[10px] border border-gray-300"
+                        />
+
+                        {touched.billing_pincode && errors.billing_pincode && (
+                            <p className='text-red-500 text-sm mt-1'>{errors.billing_pincode}</p>
+                        )}
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+  )
+}
+
+export default CustomerBillingAddress

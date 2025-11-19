@@ -11,6 +11,11 @@ const initialState={
     loading:false,
     error:null,
     successMessage:"",
+    latitude:"",
+    longitude:"",
+    mapConfirmation : false,
+    latlng : { lat : '', lng : ''},
+    address : ""
 }
 
 //get all customers
@@ -27,6 +32,14 @@ const customerSlice=createSlice({
         clearMessages:(state)=>{
             state.successMessage="";
             state.error=null;
+        },
+        setInitialCurrentPosition:(state,action)=>{
+            state.latitude="";
+            state.longitude="";
+            state.latlng={
+                lat:"",
+                lng:""
+            }
         }
     },
 
@@ -46,5 +59,5 @@ const customerSlice=createSlice({
     }
 });
 
-export const {clearMessages}=customerSlice.actions;
+export const {clearMessages,setInitialCurrentPosition}=customerSlice.actions;
 export default customerSlice.reducer;

@@ -124,6 +124,7 @@ const AddProduct = () => {
                           {" "}
                           <span className="text-red-500 ">*</span> Category
                         </Label>
+
                         <Select
                           onValueChange={(value) =>
                             setFieldValue("category_id", value)
@@ -145,6 +146,7 @@ const AddProduct = () => {
                             ))}
                           </SelectContent>
                         </Select>
+
                         {touched.category_id && errors.category_id && (
                           <p className="text-red-500 text-sm mt-1">
                             {errors.category_id}
@@ -162,6 +164,7 @@ const AddProduct = () => {
                           <span className="text-red-500 mr-1">*</span>Product
                           Name
                         </Label>
+                        
                         <Input
                           id="name"
                           name="name"
@@ -401,7 +404,7 @@ const AddProduct = () => {
 
                   {/* Buttons */}
 
-                  <div className="flex flex-row gap-[20px] mt-[20px] ml-[10px] pb-[20px]">
+                  <div className="flex flex-row  gap-[20px] mt-[20px] ml-[10px] pb-[20px]">
                     <Button
                       variant="outline"
                       onClick={() => navigate("/productlist")}

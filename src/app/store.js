@@ -5,6 +5,7 @@ import {persistReducer} from 'redux-persist'; //Imports persistReducer, a functi
 import { combineReducers } from '@reduxjs/toolkit'; //combineReducers lets you combine multiple slice reducers into a single root reducer object keyed by slice name.
 import productReducer from '../features/productManagement/productSlice';
 import customerReducer from '../features/customerManagement/customerSlice';
+import locationReducer from '../features/customerManagement/locationSlice'
 
 const persistConfig={
     key:"root",  //the top-level key under which the persisted state will be stored in localStorage.
@@ -15,7 +16,8 @@ const persistConfig={
 const reducer=combineReducers({ //Combines your slice reducers into one root reducer.
     auth:authReducer,
     product:productReducer,
-    customer:customerReducer
+    customer:customerReducer,
+    location:locationReducer
 });
 
 const persistedReducer = persistReducer(persistConfig,reducer);//persistedReducer behaves like your root reducer, but it also saves state to and loads state from localStorage automatically.

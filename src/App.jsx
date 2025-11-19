@@ -15,7 +15,7 @@ const ProductList = lazy(() => import("./views/product-management/ProductList"))
 const CustomerList = lazy(() => import("./views/customer-management/CustomerList"));
 const AddProduct= lazy(()=> import("./views/product-management/AddProduct"));
 const EditProduct=lazy(()=> import("./views/product-management/EditProduct"));
-const AddCustomer=lazy(()=> import("./views/customer-management/AddCustomer.jsx"))
+const NewCustomer=lazy(()=> import("./views/customer-management/CustomerNew/index"))
 
 function App() {
   const dispatch = useDispatch();
@@ -56,7 +56,7 @@ function App() {
               <Route path="/add-product" element={<AddProduct/>}/>
               <Route path="/edit-product/:id" element={<EditProduct/>}/>
 
-              <Route path="/add-customer" element={<AddCustomer/>}/>
+              <Route path="/add-customer" element={<NewCustomer/>}/>
             </Route>
 
             {/*  Catch-all route (redirect to login) */}

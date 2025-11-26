@@ -24,15 +24,23 @@ const initialValues = {
   name: "",
   mobile: "",
   email: "",
-  gstimg: null,
+  // gstimg: null,
+  gst_images: [],
+  gstimg: [],
   gstno: "",
   relationship_manager: "",
+  // relationship_manager: { value: "", label: "" },
   payment_term: "",
 
-  billing_state: null,
-  billing_district: null,
-  billing_taluka: null,
-  billing_city_id: null,
+  
+  billing_state: { value: "", label: "" },
+  billing_district: { value: "", label: "" },
+  billing_taluka: { value: "", label: "" },
+  billing_city_id: { value: "", label: "" },
+  // billing_state: null,
+  // billing_district: null,
+  // billing_taluka: null,
+  // billing_city_id: null,
 
   billing_address: "",
   billing_pincode: "",
@@ -41,15 +49,25 @@ const initialValues = {
   billing_google_address: "",
 
   shipping: {
-    state: null,
-    city: null,
-    district: null,
-    taluka: null,
+    state: { value: "", label: "" },
+    district: { value: "", label: "" },
+    taluka: { value: "", label: "" },
+    city: { value: "", label: "" },
     address: "",
     pincode: "",
   },
+
+  // shipping: {
+  //   state: null,
+  //   city: null,
+  //   district: null,
+  //   taluka: null,
+  //   address: "",
+  //   pincode: "",
+  // },
   
-  isRegisteredGSTIN: "",
+  // isRegisteredGSTIN: "",
+  isRegisteredGSTIN: { label: "No", value: 0 },
   shipping_latitude: "",
   shipping_longitude: "",
   shipping_google_address: "",
@@ -81,24 +99,109 @@ const validationSchema = Yup.object().shape({
     .max(10, "Max 10 digits"),
   email: Yup.string().email().required("Email is required"),
   relationship_manager: Yup.string().required("Relationship Manager is required"),
+  // relationship_manager: Yup.object()
+  //   .shape({
+  //     value: Yup.string().required("Relationship Manager is required"),
+  //   })
+  //   .nullable()
+  //   .required("Relationship Manager is required"),
 
   gstno: Yup.string().nullable(),
 
   payment_term: Yup.number().required("Payment term is required"),
 
-  billing_state: Yup.object().required("State is required"),
-  billing_district: Yup.object().required("District is required"),
-  billing_taluka: Yup.object().required("Taluka is required"),
-  billing_city_id: Yup.object().required("City is required"),
+  // billing_state: Yup.object().required("State is required"),
+  billing_state: Yup.object()
+    .shape({
+      value: Yup.string().required("State is required"),
+    })
+    .nullable()
+    .required("State is required"),
+
+  // billing_district: Yup.object().required("District is required"),
+  billing_district: Yup.object()
+    .shape({
+      value: Yup.string().required("District is required"),
+    })
+    .nullable()
+    .required("District is required"),
+
+  // billing_taluka: Yup.object().required("Taluka is required"),
+  billing_taluka: Yup.object()
+    .shape({
+      value: Yup.string().required("Taluka is required"),
+    })
+    .nullable()
+    .required("Taluka is required"),
+
+  // billing_city_id: Yup.object().required("City is required"),
+  billing_city_id: Yup.object()
+    .shape({
+      value: Yup.string().required("City is required"),
+    })
+    .nullable()
+    .required("City is required"),
+
   billing_address: Yup.string().required("Address is required"),
   billing_pincode: Yup.number().required("Pincode is required"),
   billing_latitude: Yup.string().required("Latitude is required"),
   billing_longitude: Yup.string().required("Longitude is required"),
   billing_google_address: Yup.string().required("Google Address is required"),
 
-  isRegisteredGSTIN: Yup.object().required("GST Registered field is required"),
+  // isRegisteredGSTIN: Yup.object().required("GST Registered field is required"),
+  isRegisteredGSTIN: Yup.object()
+    .shape({
+      value: Yup.number().required(),
+    })
+    .nullable()
+    .required("GST Registered field is required"),
 
-  status: Yup.object().required("Status is required"),
+  // status: Yup.object().required("Status is required"),
+  status: Yup.object()
+    .shape({
+      value: Yup.number().required(),
+    })
+    .nullable()
+    .required("Status is required"),
+
+    shipping_same_as_billing: Yup.boolean(),
+    
+  shipping: Yup.object().when("shipping_same_as_billing", {
+    is: false,
+    then: Yup.object().shape({
+      state: Yup.object()
+        .shape({
+          value: Yup.string().required("State is required"),
+        })
+        .nullable()
+        .required("State is required"),
+
+      district: Yup.object()
+        .shape({
+          value: Yup.string().required("District is required"),
+        })
+        .nullable()
+        .required("District is required"),
+
+      taluka: Yup.object()
+        .shape({
+          value: Yup.string().required("Taluka is required"),
+        })
+        .nullable()
+        .required("Taluka is required"),
+
+      city: Yup.object()
+        .shape({
+          value: Yup.string().required("City is required"),
+        })
+        .nullable()
+        .required("City is required"),
+
+      address: Yup.string().required("Address is required"),
+      pincode: Yup.number().required("Pincode is required"),
+    }),
+    otherwise: (schema) => schema,
+  }),
 });
 
 const CustomerForm = forwardRef((props, ref) => {
@@ -118,6 +221,7 @@ const CustomerForm = forwardRef((props, ref) => {
             <Formik
               innerRef={ref}
               initialValues={initialValues}
+              enableReinitialize
               validationSchema={validationSchema}
               onSubmit={(values, { setSubmitting }) => {
                 const formData = cloneDeep(values);
@@ -188,6 +292,7 @@ const CustomerForm = forwardRef((props, ref) => {
                         touched={touched}
                         errors={errors}
                         setFieldValue={setFieldValue}
+                        handleChange={handleChange}
                       />
                     </div>
 

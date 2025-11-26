@@ -1,5 +1,6 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import { getAllCustomersAPI } from "./customerAPI";
+import axiosInstance from "../../api/axiosInstance";
 
 const initialState={
     customers:[],
@@ -24,6 +25,18 @@ export const getAllCustomers=createAsyncThunk("customer/getAllCustomers",async()
     // console.log("getAllCustomers :- ",res.data);    
     return res.data;
 });
+
+export const deleteCustomer = createAsyncThunk(
+  "customers/deleteCustomer",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.delete(`/customer/deleteCustomer/${id}`);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 const customerSlice=createSlice({
     name:"customer",

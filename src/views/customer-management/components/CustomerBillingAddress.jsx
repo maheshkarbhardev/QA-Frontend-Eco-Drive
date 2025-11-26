@@ -20,6 +20,24 @@ const CustomerBillingAddress = (props) => {
     fetchStates();
   },[])
 
+  useEffect(() => {
+  if (values.billing_state?.value) {
+    fetchDistricts(values.billing_state.value);
+  }
+}, [values.billing_state]);
+
+useEffect(() => {
+  if (values.billing_district?.value) {
+    fetchTalukas(values.billing_district.value);
+  }
+}, [values.billing_district]);
+
+useEffect(() => {
+  if (values.billing_taluka?.value) {
+    fetchCities(values.billing_taluka.value);
+  }
+}, [values.billing_taluka]);
+
   const fetchStates=async()=>{
     try {
         const res=await axiosInstance.get("/customer/states");

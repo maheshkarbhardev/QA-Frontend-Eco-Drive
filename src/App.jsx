@@ -13,36 +13,35 @@ const SignIn = lazy(() => import("./views/auth/SignIn"));
 const Home = lazy(() => import("./views/home/Home"));
 const ProductList = lazy(() => import("./views/product-management/ProductList"));
 const CustomerList = lazy(() => import("./views/customer-management/CustomerList"));
-const AddProduct= lazy(()=> import("./views/product-management/AddProduct"));
-const EditProduct=lazy(()=> import("./views/product-management/EditProduct"));
-const NewCustomer=lazy(()=> import("./views/customer-management/CustomerNew/index"))
+const AddProduct = lazy(() => import("./views/product-management/AddProduct"));
+const EditProduct = lazy(() => import("./views/product-management/EditProduct"));
+const NewCustomer = lazy(() => import("./views/customer-management/CustomerNew/index"));
+const EditCustomer = lazy(() => import("./views/customer-management/CustomerEdit/index"));
 
 function App() {
   const dispatch = useDispatch();
 
-  //  Rehydrate Redux store with localStorage data on refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user")); //JSON.parse(localStorage.getItem("user")) converts the stored JSON string back to an object (or returns null if not present).
+    const user = JSON.parse(localStorage.getItem("user"));
+
     if (token && user) {
       dispatch(setCredentials({ user, token }));
     }
-  }, [dispatch]);  //The dependency array [dispatch] ensures the effect runs only when the component mounts (and the dispatch ref changes, which it won’t).
+  }, [dispatch]);
 
   return (
     <>
-      {/*  Global Toaster for app-wide notifications */}
       <Toaster position="top-right" richColors />
 
       <BrowserRouter>
-        {/* Suspense provides fallback loader while components load */}
         <Suspense fallback={<Loader />}>
           <Routes>
-            {/* Public Routes */}
+            {/* Public */}
             <Route path="/signup" element={<SignUp />} />
             <Route path="/" element={<SignIn />} />
 
-            {/*  Protected Routes (require login) */}
+            {/* Private */}
             <Route
               element={
                 <PrivateRoute>
@@ -53,13 +52,15 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/productlist" element={<ProductList />} />
               <Route path="/customerlist" element={<CustomerList />} />
-              <Route path="/add-product" element={<AddProduct/>}/>
-              <Route path="/edit-product/:id" element={<EditProduct/>}/>
 
-              <Route path="/add-customer" element={<NewCustomer/>}/>
+              <Route path="/add-product" element={<AddProduct />} />
+              <Route path="/edit-product/:id" element={<EditProduct />} />
+
+              {/* NEW — Edit Customer */}
+              <Route path="/add-customer" element={<NewCustomer />} />
+              <Route path="/edit-customer/:id" element={<EditCustomer />} />
             </Route>
 
-            {/*  Catch-all route (redirect to login) */}
             <Route path="*" element={<SignIn />} />
           </Routes>
         </Suspense>

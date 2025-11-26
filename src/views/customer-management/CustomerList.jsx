@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { getAllCustomers } from '../../features/customerManagement/customerSlice';
 import {DataTable} from './DataTable';
-import {Columns} from './Columns';
+import {useCustomerColumns } from './Columns';
 
 const CustomerList = () => {
   const [data,setData]=useState([]);
   const dispatch=useDispatch();
+  const columns = useCustomerColumns();
+
 
   const fetchCustomers=async()=>{
     try {
@@ -31,7 +33,7 @@ const CustomerList = () => {
     <div className='p-6 border rounded-2xl'>
       <h1 className='text-2xl font-semibold'>Customers</h1>
 
-      <DataTable columns={Columns} data={data}/>
+      <DataTable columns={columns} data={data}/>
     </div>
   )
 }

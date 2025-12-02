@@ -8,18 +8,18 @@ import axiosInstance from "../../../api/axiosInstance";
 const CustomerShippingAddress = (props) => {
   const { touched, values, errors, setFieldValue, handleChange } = props;
 
+  //step 1
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [talukas, setTalukas] = useState([]);
   const [cities, setCities] = useState([]);
 
-  // ========================================
-  // FETCH STATES ON LOAD
-  // ========================================
+  //step 3: fetch states when component mount
   useEffect(() => {
     fetchStates();
   }, []);
 
+  //step 2 : to get all states from api
   const fetchStates = async () => {
     try {
       const res = await axiosInstance.get("/customer/states");
@@ -36,6 +36,7 @@ const CustomerShippingAddress = (props) => {
     }
   };
 
+  //step 4: fetch districts
   const fetchDistricts = async (stateId) => {
     try {
       const res = await axiosInstance.get(`/customer/districts/${stateId}`);
@@ -52,6 +53,7 @@ const CustomerShippingAddress = (props) => {
     }
   };
 
+  //step 5: fetch taluka
   const fetchTalukas = async (districtId) => {
     try {
       const res = await axiosInstance.get(`/customer/talukas/${districtId}`);
@@ -68,6 +70,7 @@ const CustomerShippingAddress = (props) => {
     }
   };
 
+  //step 6: fetch cities
   const fetchCities = async (talukaId) => {
     try {
       const res = await axiosInstance.get(`/customer/cities/${talukaId}`);
@@ -85,7 +88,7 @@ const CustomerShippingAddress = (props) => {
   };
 
   // ========================================
-  // SAME AS BILLING CHECKBOX
+  // step 7: SAME AS BILLING CHECKBOX
   // ========================================
   const handleSameAsBilling = (checked) => {
     setFieldValue("shipping_same_as_billing", checked);

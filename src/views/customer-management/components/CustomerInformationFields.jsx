@@ -106,7 +106,7 @@ const CustomerInformationFields = (props) => {
               name="payment_term"
               value={values.payment_term}
               onChange={(e) =>
-                setFieldValue("payment_term", Number(e.target.value))
+                setFieldValue("payment_term", Number(e.target.value)) //it convert string into numbers type using Number().
               }
               placeholder="Payment Terms"
               autoComplete="off"

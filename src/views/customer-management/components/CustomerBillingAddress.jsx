@@ -8,14 +8,14 @@ import axiosInstance from '../../../api/axiosInstance';
 const CustomerBillingAddress = (props) => {
   const {touched,values,errors,setFieldValue,handleChange} = props; //Destructures values, touched, errors,setFieldValue,handleChange from props (these come from parent Formik render props).these provide current form values and validation state to render controls and error messages.
 
-
+  //step 1 
   const [state,setState]=useState([]);
   const [districts,setDistricts]=useState([]);
   const [talukas,setTalukas]=useState([]);
   const [cities,setCities]=useState([]);
 
   
-  //fetch states on component mount
+  //step 3: fetch states on component mount
   useEffect(()=>{
     fetchStates();
   },[])
@@ -38,6 +38,7 @@ useEffect(() => {
   }
 }, [values.billing_taluka]);
 
+  //step 2 : fetch states from api
   const fetchStates=async()=>{
     try {
         const res=await axiosInstance.get("/customer/states");
@@ -52,7 +53,7 @@ useEffect(() => {
     }
   }
 
-  //get districts when state changes
+  //step 4: get districts when state changes
   const fetchDistricts=async(stateId)=>{
     try {
         const res=await axiosInstance.get(`/customer/districts/${stateId}`);
@@ -67,7 +68,7 @@ useEffect(() => {
     }
   } 
 
-  //get talukas when district changes
+  //step 5: get talukas when district changes
   const fetchTalukas=async(districtId)=>{
     try {
         const res=await axiosInstance.get(`/customer/talukas/${districtId}`);
@@ -82,7 +83,7 @@ useEffect(() => {
     }
   }
 
-  //get cities when taluka changes
+  //step6: get cities when taluka changes
   const fetchCities=async(talukaId)=>{
     try {
         const res=await axiosInstance.get(`/customer/cities/${talukaId}`);
@@ -97,25 +98,27 @@ useEffect(() => {
     }
   }
 
-  //handle state change
+  //step 7: handle state change
   const handleStateChange=(selected)=>{
-    setFieldValue("billing_state",selected);
+    setFieldValue("billing_state",selected); //selected options label and value has set in billing_state
 
     // Reset dependent fields
     setFieldValue("billing_district", null);
     setFieldValue("billing_taluka", null);
     setFieldValue("billing_city_id", null);
 
+    //keep other options empty
     setDistricts([]);
     setTalukas([]);
     setCities([]);
 
+    //if billing_state is selected then fetchDistricts() calls and pass id of state
     if(selected){
         fetchDistricts(selected.value);
     }
   }
 
-  //handle district change
+  //step 8: handle district change
   const handleDistrictChange=(selected)=>{
     setFieldValue("billing_district",selected);
 
@@ -131,7 +134,7 @@ useEffect(() => {
     }
   }
 
-  //handle taluka change
+  //step 9: handle taluka change
   const handleTalukaChange=(selected)=>{
     setFieldValue("billing_taluka",selected);
 
@@ -145,7 +148,7 @@ useEffect(() => {
     }
   }
 
-  //handle city change
+  //step 10: handle city change
   const handleCityChange=(selected)=>{
     setFieldValue("billing_city_id",selected);
   }
@@ -189,7 +192,7 @@ useEffect(() => {
                         value={values.billing_district}
                         onChange={handleDistrictChange}
                         placeholder="Select..."
-                        isDisabled={!values.billing_state}
+                        isDisabled={!values.billing_state} //if no values.billing_state then this dropdown is disable
                         isSearchable
                         className='w-[300px] ml-[30px] mt-[7px]'
                         />

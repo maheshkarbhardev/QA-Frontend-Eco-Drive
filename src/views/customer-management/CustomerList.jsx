@@ -5,15 +5,16 @@ import {DataTable} from './DataTable';
 import {useCustomerColumns } from './Columns';
 
 const CustomerList = () => {
-  const [data,setData]=useState([]);
+  const [data,setData]=useState([]);   //useState for to hold api data
   const dispatch=useDispatch();
-  const columns = useCustomerColumns();
+  const columns = useCustomerColumns();  //call useCustomerColumns component
 
 
+  //api call for get all customers 
   const fetchCustomers=async()=>{
     try {
       const res=await dispatch(getAllCustomers());
-      // console.log("fetchCustomers Response:- ",res.payload);
+      //  console.log("fetchCustomers Response:- ",res.payload);
       
       setData(res.payload);  
 
